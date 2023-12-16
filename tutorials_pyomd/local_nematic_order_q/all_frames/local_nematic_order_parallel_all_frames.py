@@ -55,7 +55,7 @@ gro.trajectory.add_transformations(transform)
 #https://www.ovito.org/docs/current/installation.html
 #gz compressed file can be imported directly to OVITO
 with mda.coordinates.XYZ.XYZWriter(output_filename, atoms_ref.n_atoms) as W:
-    for ts in mda.lib.log.ProgressBar(gro.trajectory[0:10], verbose=True, total=len(gro.trajectory[0:10])):
+    for ts in mda.lib.log.ProgressBar(gro.trajectory, verbose=True, total=len(gro.trajectory)):
 
         #box unitcell dimensions: [lx, ly, lz, alpha, beta, gamma]
         box_unit_cell = gro.dimensions
