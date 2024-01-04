@@ -104,11 +104,19 @@ for rm in range(index_eigs_Q_matrix.shape[0]):
     print('%d' %index_eigs_Q_matrix[rm,0],'    %.3f' %index_eigs_Q_matrix[rm,1],'    %d' %index_eigs_Q_matrix[rm,2])
 
 #updating the name of the atoms according to their local nematic order value
-atoms_ref.names = pyomd_static.update_atomic_names_local_nematic_order(atoms_ref.names,index_eigs_Q_matrix)
+atoms_ref_tmp = pyomd_static.update_atomic_names_local_nematic_order(atoms_ref.names,index_eigs_Q_matrix)
 
 #wrting the new atomic names and their xyz coordinates to be visualized in OVITO Basic
 #"available free of charge under an open source license" (https://www.ovito.org/)
 #https://www.ovito.org/docs/current/installation.html
 #gz compressed file can be imported directly to OVITO
 with mda.coordinates.XYZ.XYZWriter(output_filename, atoms_ref.n_atoms) as W:
-    W.write(atoms_ref)
+    try:
+        #the XYZ writer looks for the atom elements first, instead of atom names
+        #see the function def _get_atoms_elements_or_names(self, atoms) at
+        #https://github.com/MDAnalysis/mdanalysis/blob/734314b8b7b70617a92eb505f75844e6837505ca/package/MDAnalysis/coordinates/XYZ.py
+        atoms_ref.atoms.atoms.elements = atoms_ref_tmp
+        W.write(atoms_ref)
+    except:
+        atoms_ref.names = atoms_ref_tmp
+        W.write(atoms_ref)
