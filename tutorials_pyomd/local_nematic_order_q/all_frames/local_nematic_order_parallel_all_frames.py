@@ -107,9 +107,18 @@ with mda.coordinates.XYZ.XYZWriter(output_filename, atoms_ref.n_atoms) as W:
             print('%d' %index_eigs_Q_matrix[rm,0],'    %.3f' %index_eigs_Q_matrix[rm,1],'    %d' %index_eigs_Q_matrix[rm,2])
 
         #updating the name of the atoms according to their local nematic order value
-        atoms_ref.names = pyomd_static.update_atomic_names_local_nematic_order(atoms_ref.names,index_eigs_Q_matrix)
+        atoms_ref_tmp = pyomd_static.update_atomic_names_local_nematic_order(atoms_ref.names,index_eigs_Q_matrix)
 
-        W.write(atoms_ref)
-
-        #returning the original atomic names for the next frame
-        atoms_ref.names = atoms_ref_copy.names
+        try:
+            #the XYZ writer looks for the atom elements first, instead of atom names
+            #see the function def _get_atoms_elements_or_names(self, atoms) at
+            #https://github.com/MDAnalysis/mdanalysis/blob/734314b8b7b70617a92eb505f75844e6837505ca/package/MDAnalysis/coordinates/XYZ.py
+            atoms_ref.atoms.atoms.elements = atoms_ref_tmp
+            W.write(atoms_ref)
+            #returning the original element names for the next frame
+            atoms_ref.atoms.atoms.elements = atoms_ref_copy.atoms.atoms.elements
+        except:
+            atoms_ref.names = atoms_ref_tmp
+            W.write(atoms_ref)
+            #returning the original atomic names for the next frame
+            atoms_ref.names = atoms_ref_copy.names
