@@ -79,6 +79,9 @@ use_threshold_radius=True, reference_point_=np.array([0.,0.,0.]), threshold_radi
     monomer_C_length_ = np.int64(monomer_C_length_)
 
     if use_threshold_radius:
+        #coordinates of each monomer
+        chain_coordinates_ = chain_coordinates_[::monomer_C_length_]
+
         #index of chain coordinates (a numpy array)
         index_coordinates_ = np.arange(chain_coordinates_.shape[0])
 
@@ -92,13 +95,13 @@ use_threshold_radius=True, reference_point_=np.array([0.,0.,0.]), threshold_radi
         chain_coordinates_ = chain_coordinates_[index_threshold,:]
 
         #Vector from each monomer to the next (tangent vector)
-        vecs = chain_coordinates_[monomer_C_length_::monomer_C_length_] - chain_coordinates_[:-monomer_C_length_:monomer_C_length_]
+        vecs = chain_coordinates_[1::1] - chain_coordinates_[:-1:1]
         #using the minimum image convention to vectors (applying the periodic boundary conditions)
         vecs[:,1:] = pyomd_math.minimize_vectors_pbc(vecs[:,1:], box_)
 
         #using the difference from indices to choose the tangent vectors around the reference point
         #if the difference between indices (integers) is larger than 1, the vector is not a tangent vector
-        index_diff = (vecs[:,0] < 1.5)  #using 1.5 to avoid floating point arithmetic issues
+        index_diff = (vecs[:,0] < 1.5)  #using +0.5 to avoid floating point arithmetic issues
         vecs = vecs[index_diff,:]
 
         #recovering the tangent vectors

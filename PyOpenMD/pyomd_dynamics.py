@@ -21,8 +21,14 @@ np.set_printoptions(threshold=sys.maxsize)
 ##The ouput parameter is:
 #"vecs" (numpy array): end-to-end vector
 def end_to_end_vector(chain_coordinates_,monomer_C_length_):
+    #"monomer_C_length_" is used for cases where other atoms are present in the
+    #backbone and not only the reference atom
+    
     #in case monomer_C_length_ is not inputted as an integer
     monomer_C_length_ = np.int64(monomer_C_length_)
+
+    #coordinates of each monomer
+    chain_coordinates_ = chain_coordinates_[::monomer_C_length_]
 
     #end-to-end vector
     vecs = chain_coordinates_[-1] - chain_coordinates_[0]
@@ -32,11 +38,7 @@ def end_to_end_vector(chain_coordinates_,monomer_C_length_):
     #image, i.e., another chain). Instead, the coordinates of fragments (polymers)
     #are unwrapped before calling this function.
 
-    ##"monomer_C_length_" is not required for this function, but it was kept
-    #for cases where other atoms are present in the backbone and not only the
-    #reference atom
     #the next two lines is another way to compute the end-to-end vector
-
     #vecs = chain_coordinates_[monomer_C_length_::monomer_C_length_] - chain_coordinates_[:-monomer_C_length_:monomer_C_length_]
     #vecs = vecs.sum(axis=0)
 
