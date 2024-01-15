@@ -101,7 +101,7 @@ use_threshold_radius=True, reference_point_=np.array([0.,0.,0.]), threshold_radi
 
         #using the difference from indices to choose the tangent vectors around the reference point
         #if the difference between indices (integers) is larger than 1, the vector is not a tangent vector
-        index_diff = (vecs[:,0] < 1.5)  #using +0.5 to avoid floating point arithmetic issues
+        index_diff = (vecs[:,0] < 1.5)  #using 1.5 to avoid floating point arithmetic issues
         vecs = vecs[index_diff,:]
 
         #recovering the tangent vectors
