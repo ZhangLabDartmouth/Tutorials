@@ -25,7 +25,7 @@ n_chains = 64
 n_monomores = 18
 
 #the frequency that the reference atom represents a monomer in the backbone
-monomer_C_length = 1  #check the select_atoms below before changing this parameter
+monomer_C_length = 2  #check the select_atoms below before changing this parameter
 ######################## change these parameters ###############################
 
 #list of end-to-end vector correlation
@@ -53,7 +53,7 @@ for ts in mda.lib.log.ProgressBar(gro.trajectory, verbose=True,
     ########################change this parameters##############################
     #C1 is the reference atom of the monomer
     #backbones returns only the coordinates of atom C1 for each chain
-    backbones = [chain.select_atoms('name C1') for chain in chains]
+    backbones = [chain.select_atoms('name C1 or name C2') for chain in chains]
     ########################change this parameters##############################
 
     #get end-to-end vectors for each chain
@@ -71,11 +71,11 @@ time_step = np.asarray(list_time_step) #in picoseconds (ps)
 n_frames = len(gro.trajectory)
 if len(list_end_vectors) != (n_frames*n_chains):
     print('Check if the number of chains is correct.\n'
- 'Check if the frames were propely compressed (e.g., last frame).')
+ 'Check if the frames were properly compressed (e.g., last frame).')
 
 if (number_atoms/monomer_C_length) != (n_frames*n_chains*n_monomores):
     print('Check if the number of monomers is correct.\n'
- 'Check if the frames were propely compressed (e.g., last frame).')
+ 'Check if the frames were properly compressed (e.g., last frame).')
 
 #checking if the time steps are equal
 if not np.all(np.isclose(time_step, time_step[0])):
