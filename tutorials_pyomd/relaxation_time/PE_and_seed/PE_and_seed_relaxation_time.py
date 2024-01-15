@@ -77,11 +77,11 @@ time_step = np.asarray(list_time_step) #in picoseconds (ps)
 n_frames = len(gro.trajectory)
 if len(list_end_vectors) != (n_frames*n_chains):
     print('Check if the number of chains is correct.\n'
- 'Check if the frames were propely compressed (e.g., last frame).')
+ 'Check if the frames were properly compressed (e.g., last frame).')
 
-if (number_atoms) != (n_frames*n_chains*n_monomores):
+if (number_atoms/monomer_C_length) != (n_frames*n_chains*n_monomores):
     print('Check if the number of monomers is correct.\n'
- 'Check if the frames were propely compressed (e.g., last frame).')
+ 'Check if the frames were properly compressed (e.g., last frame).')
 
 #checking if the time steps are equal
 if not np.all(np.isclose(time_step, time_step[0])):
@@ -105,7 +105,7 @@ perr = (np.sqrt(np.diag(pcov))).item()  #one standard deviation
 
 #printing data
 ############### uncomment these lines to print the data ########################
-print('#Total number of atoms considered in all chains per frame =', (number_atoms / n_frames))
+print('#Total number of atoms considered in all chains per frame =', (number_atoms / (n_frames*monomer_C_length)))
 print("#Time frame (ns)   Vector Correlation")
 for i in range(delta_time.shape[0]):
     print('%.8f       %.8f' % (delta_time[i],correlation_function[i]))
